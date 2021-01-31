@@ -37,11 +37,11 @@
     </style>
 
     <style name="EditTextDefault">
-        <item name="android:layout_height">50dp</item>
         <item name="android:background">#FFFFFF</item>
         <item name="android:ems">10</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">#54000000</item>
+        <item name="android:textColor">#BF000000</item>
+        <item name="android:drawablePadding">-20dp</item>
     </style>
 
     <style name="BackgroundColorMain">

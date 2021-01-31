@@ -1,6 +1,5 @@
 package com.example.lmctest.critics;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -11,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.os.Handler;
-import android.view.KeyEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +22,8 @@ import com.example.lmctest.R;
 public class CriticsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private static final String TAG = "LMCTest";
-
-    @SuppressLint("StaticFieldLeak")
-    public static EditText editTextCriticName;
-    public static RecyclerView criticView;
+    public String textCriticName;
+    public RecyclerView criticView;
 
     public CriticsFragment() {
         // Required empty public constructor
@@ -45,15 +41,24 @@ public class CriticsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         criticView = view.findViewById(R.id.criticsRecyclerView);
         criticView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        editTextCriticName = view.findViewById(R.id.editTextCriticName);
-        editTextCriticName.setOnKeyListener(new View.OnKeyListener() {
+        final EditText editTextCriticName = view.findViewById(R.id.editTextCriticName);
+        setTextCriticName(editTextCriticName);
+        editTextCriticName.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER))
-                    new CriticsInfo().networkService(getContext(),
-                            criticView,
-                            getEditTextCriticName());
-                return false;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                setTextCriticName(editTextCriticName);
+                new CriticsInfo()
+                        .networkService(getContext(), criticView, getTextCriticName());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -61,7 +66,7 @@ public class CriticsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
-        new CriticsInfo().networkService(getContext(), criticView, getEditTextCriticName());
+        new CriticsInfo().networkService(getContext(), criticView, getTextCriticName());
     }
 
     @Override
@@ -71,18 +76,18 @@ public class CriticsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         return inflater.inflate(R.layout.fragment_critics, container, false);
     }
 
-    public static String getEditTextCriticName() {
-        return editTextCriticName.getText().toString();
+    public void setTextCriticName(EditText editText) {
+        textCriticName = editText.getText().toString();
+    }
+
+    public String getTextCriticName() {
+        return textCriticName;
     }
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                CriticsAdapter.refreshResults(getContext(), criticView);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, 2000);
+        new CriticsInfo()
+                .networkService(getContext(), criticView, textCriticName);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

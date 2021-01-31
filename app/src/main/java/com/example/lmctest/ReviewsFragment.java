@@ -1,32 +1,32 @@
 package com.example.lmctest;
 
-import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.os.Handler;
-import android.view.KeyEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import androidx.appcompat.widget.Toolbar;
 
-public class ReviewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+import java.util.Calendar;
+
+public class ReviewsFragment extends Fragment
+        implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    @SuppressLint("StaticFieldLeak")
-    public static EditText editTextKeyword;
-    public static RecyclerView recyclerView;
+    public String textKeyword;
+    public RecyclerView recyclerView;
     public static String sortDate = "1900-01-01";
 
     public ReviewsFragment() {
@@ -45,28 +45,24 @@ public class ReviewsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         recyclerView = view.findViewById(R.id.recycleRewiews);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        editTextKeyword = view.findViewById(R.id.editTextKeyword);
+        final EditText editTextKeyword = view.findViewById(R.id.editTextKeyword);
         final EditText editTextDate = view.findViewById(R.id.editTextDate);
+        editTextDate.setOnClickListener(this);
 
-        editTextKeyword.setOnKeyListener(new View.OnKeyListener() {
+        editTextKeyword.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if ((keyEvent.getAction() == android.view.KeyEvent.ACTION_DOWN) &&
-                        (i == android.view.KeyEvent.KEYCODE_ENTER))
-                    new ReviewsInfo().networkService(getContext(),
-                            recyclerView,
-                            getEditTextKeyword(), "");
-                return false;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
-        });
 
-        editTextDate.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if ((keyEvent.getAction() == android.view.KeyEvent.ACTION_DOWN) &&
-                        (i == android.view.KeyEvent.KEYCODE_ENTER))
-                    setSortDate(editTextDate.getText().toString());
-                return false;
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                keyAction(editTextKeyword, editTextDate);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -74,15 +70,46 @@ public class ReviewsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
 
-        new ReviewsInfo().networkService(getContext(), recyclerView, getEditTextKeyword(), "");
+        new ReviewsInfo().networkService(getContext(), recyclerView, getTextKeyword(), "");
     }
 
-    public static String getEditTextKeyword() {
-        return editTextKeyword.getText().toString();
+    @Override
+    public void onClick(View view) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog =
+                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int y, int m, int d) {
+                sortDate = y + "-0" + (m + 1) + "-" + d;
+                new ReviewsInfo().networkService(getContext(), recyclerView, getTextKeyword(), "");
+            }
+        }, year, month, day);
+        datePickerDialog.show();
     }
 
-    public void setSortDate(String date) {
-        sortDate = date;
+    public void keyAction(EditText editTextKeyword, EditText editTextDate) {
+        setSortDate(editTextDate);
+        setTextKeyword(editTextKeyword);
+        new ReviewsInfo().networkService(getContext(), recyclerView, getTextKeyword(), "");
+    }
+
+    public void setTextKeyword(EditText editText) {
+        textKeyword = editText.getText().toString();
+    }
+
+    public String getTextKeyword() {
+        return textKeyword;
+    }
+
+
+    public void setSortDate(EditText editText) {
+        String date = editText.getText().toString();
+        if (date.equals("")) sortDate = "1900-01-01";
+        else sortDate = date;
     }
 
     public static String getSortDate() {
@@ -98,12 +125,7 @@ public class ReviewsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ResultsAdapter.refreshResults(getContext(), recyclerView);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, 2000);
+        new ReviewsInfo().networkService(getContext(), recyclerView, sortDate, "");
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

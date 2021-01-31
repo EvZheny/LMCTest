@@ -11,8 +11,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReviewsInfo {
-    private static final String TAG = "LMCTest";
-    private static final String TOKEN = "p6bEPFJXQdB0ZGhSAcpcGFwrTszl3pRC";
+    private final String TAG = "LMCTest";
+    private final String TOKEN = "p6bEPFJXQdB0ZGhSAcpcGFwrTszl3pRC";
     public String publication_date;
     public int offset;
 
@@ -27,12 +27,12 @@ public class ReviewsInfo {
                     @Override
                     public void onResponse(@NonNull Call<Reviews> call,
                                            @NonNull Response<Reviews> response) {
-                        if (response.body() != null && response.body().getResults()!= null)
-                            ResultsAdapter.setResults(response.body().getResults());
+                        if (response.body() != null && response.body().getResults()!= null) {
                             ResultsAdapter resultsAdapter =
-                                    new ResultsAdapter(context, ResultsAdapter.getResults());
+                                    new ResultsAdapter(context, response.body().getResults());
                             recyclerView.setAdapter(resultsAdapter);
                             resultsAdapter.notifyDataSetChanged();
+                        }
                     }
 
                     @Override

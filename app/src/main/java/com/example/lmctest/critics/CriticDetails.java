@@ -13,8 +13,6 @@ import com.example.lmctest.R;
 import com.example.lmctest.ReviewsInfo;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 public class CriticDetails extends AppCompatActivity {
 
     @Override
@@ -23,31 +21,28 @@ public class CriticDetails extends AppCompatActivity {
         setContentView(R.layout.activity_critic_details);
 
         Bundle arguments = getIntent().getExtras();
-        int position = arguments.getInt("position");
-        List<Result> resultList = CriticsAdapter.getResults();
-        Result result = resultList.get(position);
+        String displayName = arguments.getString("displayName");
+        String bio = arguments.getString("bio");
+        String status = arguments.getString("status");
+        String imagePath = arguments.getString("imagePath");
 
-        TextView text_display_name = this.findViewById(R.id.critic_details_display_name);
-        TextView critic_details_bio = this.findViewById(R.id.critic_details_bio);
-        TextView critic_details_status = this.findViewById(R.id.critic_details_status);
-        ImageView critic_details_image = this.findViewById(R.id.critic_details_image);
+        TextView textDisplayName = this.findViewById(R.id.critic_details_display_name);
+        TextView criticDetailsBio = this.findViewById(R.id.critic_details_bio);
+        TextView criticDetailsStatus = this.findViewById(R.id.critic_details_status);
+        ImageView criticDetailsImage = this.findViewById(R.id.critic_details_image);
 
-        text_display_name.setText(result.getDisplayName());
-        critic_details_bio.setText((CharSequence) result.getBio());
-        critic_details_status.setText(result.getStatus());
+        textDisplayName.setText(displayName);
+        criticDetailsBio.setText(bio);
+        criticDetailsStatus.setText(status);
 
-        if (result.getMultimedia() != null)
-            Picasso.get().load(result
-                    .getMultimedia()
-                    .getResource()
-                    .getSrc())
-                    .into(critic_details_image);
+        if (imagePath.equals(""))
+            criticDetailsImage.setImageResource(R.drawable.ic_launcher_foreground);
         else
-            critic_details_image.setImageResource(R.drawable.ic_launcher_foreground);
+            Picasso.get().load(imagePath).into(criticDetailsImage);
 
         RecyclerView recyclerView = this.findViewById(R.id.review_by_critic);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         new ReviewsInfo()
-                .networkService(this, recyclerView, "", text_display_name.getText().toString());
+                .networkService(this, recyclerView, "", textDisplayName.getText().toString());
     }
 }

@@ -6,6 +6,7 @@
     android:id="@+id/criticsConstraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="5dp"
     tools:context=".critics.CriticsFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -30,7 +31,6 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.cardview.widget.CardView
-        style="@style/CardDefault"
         android:id="@+id/cardView"
         android:padding="5dp"
         android:layout_width="wrap_content"
@@ -45,14 +45,9 @@
         style="@style/EditTextDefault"
         android:id="@+id/editTextCriticName"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:ems="10"
-        android:inputType="textPersonName"/>
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_action_youtube_searched_for"/>
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:drawableStart="@drawable/ic_action_youtube_searched_for"/>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

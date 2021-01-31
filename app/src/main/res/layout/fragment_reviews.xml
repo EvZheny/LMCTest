@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="5dp"
     tools:context=".ReviewsFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -45,15 +46,12 @@
             style="@style/EditTextDefault"
             android:id="@+id/editTextDate"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:inputType="date"
             android:hint="@string/default_date"
-            android:textColor="@color/cardview_dark_background"/>
+            android:drawableStart="@drawable/ic_action_today"/>
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_action_today" />
+
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -66,18 +64,15 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.01">
+        app:layout_constraintVertical_bias="0.0">
         <EditText
             style="@style/EditTextDefault"
             android:id="@+id/editTextKeyword"
             android:layout_width="wrap_content"
-            android:inputType="textPersonName" />
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:drawableStart="@drawable/ic_action_youtube_searched_for"/>
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_action_youtube_searched_for"/>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

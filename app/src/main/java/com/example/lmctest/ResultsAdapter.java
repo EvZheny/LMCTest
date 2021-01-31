@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsViewHolder> {
     private final LayoutInflater inflater;
-    private static List<Result> reviewsResult;
+    private List<Result> reviewsResult;
 
     public ResultsAdapter(Context context, List<Result> resultList) {
         this.reviewsResult = resultList;
@@ -46,8 +46,8 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsViewHolder> {
                 && dateFormat(result.getPublicationDate())
                 .after(dateFormat(ReviewsFragment.getSortDate()))) {
             holder.textReview.setText(result.getSummaryShort());
-            holder.display_title.setText(result.getDisplayTitle());
-            holder.display_date_updated.setText(result.getDateUpdated());
+            holder.displayTitle.setText(result.getDisplayTitle());
+            holder.displayDateUpdated.setText(result.getDateUpdated());
             holder.byline.setText(result.getByline());
 
             if (result.getMultimedia() != null)
@@ -59,20 +59,6 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsViewHolder> {
             holder.itemView.setVisibility(View.GONE);
             holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
         }
-    }
-
-    public static List<Result> getResults() {
-        return reviewsResult;
-    }
-
-    public static void setResults(List<Result> results) {
-        reviewsResult = results;
-    }
-
-    public static void refreshResults(Context context, RecyclerView recyclerView) {
-        new ReviewsInfo()
-                .networkService(context,
-                        recyclerView, ReviewsFragment.getEditTextKeyword(), "");
     }
 
     public Date dateFormat(String dateString) {
